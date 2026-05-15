@@ -1,0 +1,111 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Expedition Service API",
+        "description": "API Documentation untuk Service C (Ekspedisi/Logistik)",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/v1/inbound-shipments": {
+            "get": {
+                "tags": [
+                    "Shipments"
+                ],
+                "summary": "Mengambil daftar seluruh kargo",
+                "operationId": "e5d8a6e3156653d7db1eb4358cb42730",
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil data"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Shipments"
+                ],
+                "summary": "Menerima data manifest",
+                "operationId": "9dd4d81c0d92312e766bd0bde30a579c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "supplier_name": {
+                                        "type": "string"
+                                    },
+                                    "manifest_data": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Berhasil membuat data"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/inbound-shipments/{id}": {
+            "get": {
+                "tags": [
+                    "Shipments"
+                ],
+                "summary": "Melacak status spesifik kargo",
+                "operationId": "a13c64910e87f64d5672aab59bacf630",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil detail"
+                    },
+                    "404": {
+                        "description": "Data tidak ditemukan"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "ApiKeyAuth": {
+                "type": "apiKey",
+                "name": "X-IAE-KEY",
+                "in": "header"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Shipments",
+            "description": "Shipments"
+        }
+    ]
+}

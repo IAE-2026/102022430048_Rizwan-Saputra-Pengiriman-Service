@@ -1,0 +1,16 @@
+type Query {
+    inboundShipments: [InboundShipment!]! @all
+    inboundShipment(id: ID! @eq): InboundShipment @find
+}
+
+type InboundShipment {
+    id: ID!
+    tracking_number: String!
+    supplier_name: String!
+    manifest_data: String!
+    status: String!
+    estimated_arrival: String!
+    current_position: String
+    created_at: String!
+    updated_at: String!
+}
