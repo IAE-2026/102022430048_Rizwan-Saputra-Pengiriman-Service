@@ -17,7 +17,7 @@ services:
     container_name: expedition-nginx
     restart: unless-stopped
     ports:
-      - "8000:80"
+      - "8002:80"
     volumes:
       - .:/var/www
       - ./docker-compose/nginx:/etc/nginx/conf.d/
