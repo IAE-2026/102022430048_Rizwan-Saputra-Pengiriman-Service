@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\InboundShipment;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
+use App\Services\IaeCentralService;
 
 class InboundShipmentController extends Controller
 {
@@ -53,7 +54,7 @@ class InboundShipmentController extends Controller
     #[OA\Post(path: "/api/v1/inbound-shipments", summary: "Menerima data manifest", tags: ["Shipments"], security: [["ApiKeyAuth" => []]])]
     #[OA\RequestBody(required: true, content: new OA\JsonContent(properties: [new OA\Property(property: "supplier_name", type: "string"), new OA\Property(property: "manifest_data", type: "string")]))]
     #[OA\Response(response: 201, description: "Berhasil membuat data")]
-    public function store(Request $request)
+    public function store(Request $request, IaeCentralService $iaeService)
     {
         $validated = $request->validate([
             'supplier_name' => 'required|string',
@@ -67,6 +68,43 @@ class InboundShipmentController extends Controller
 
         $shipment = InboundShipment::create($validated);
 
-        return $this->formatResponse('success', 'Data manifest diterima, jadwal dan resi berhasil diterbitkan', $shipment, 201);
+        $logData = [
+            'shipment_id' => $shipment->id,
+            'tracking_number' => $shipment->tracking_number,
+            'supplier_name' => $shipment->supplier_name,
+            'manifest_data' => $shipment->manifest_data
+        ];
+
+        $auditResponse = $iaeService->sendAudit('InboundShipmentCreated', $logData);
+
+        preg_match('/<iae:ReceiptNumber>(.*?)<\/iae:ReceiptNumber>/', $auditResponse, $matches);
+        $receiptNumber = $matches[1] ?? null;
+
+        if ($receiptNumber) {
+            $shipment->legacy_receipt_number = $receiptNumber;
+            $shipment->save();
+        }
+
+        $eventPayload = [
+            'event_name' => 'InboundShipmentCreated',
+            'service_name' => 'Expedition-Service',
+            'api_version' => 'v1',
+            'occurred_at' => now()->toIso8601String(),
+            'sender' => 'TEAM-03',
+            'shipment_data' => $shipment->toArray()
+        ];
+
+        $rabbitResponse = $iaeService->publishEvent([
+            'routing_key' => 'shipment.created',
+            'message' => $eventPayload
+        ]);
+    
+        $responseData = [
+            'shipment' => $shipment,
+            'legacy_receipt' => $receiptNumber,
+            'rabbitmq_status' => $rabbitResponse
+        ];
+
+        return $this->formatResponse('success', 'Data manifest diterima, jadwal dan resi berhasil diterbitkan', $responseData, 201);
     }
 }

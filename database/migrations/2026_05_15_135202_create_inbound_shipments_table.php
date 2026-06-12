@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('status')->default('on_the_way');
             $table->dateTime('estimated_arrival');
             $table->string('current_position')->nullable();
+            $table->string('legacy_receipt_number')->nullable();
             $table->timestamps();
         });
     }
