@@ -38,9 +38,6 @@ return [
             // middleware, this delegates auth and permission checks to the field level.
             Nuwave\Lighthouse\Http\Middleware\AttemptAuthentication::class,
 
-            // PROTEKSI CUSTOM TUGAS IAE
-            \App\Http\Middleware\CheckIaeKey::class,
-
             // Logs every incoming GraphQL query.
             // Nuwave\Lighthouse\Http\Middleware\LogGraphQLQueries::class,
         ],
