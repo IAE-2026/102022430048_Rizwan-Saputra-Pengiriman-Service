@@ -15,5 +15,28 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (\Throwable $e, \Illuminate\Http\Request $request) {
+            if ($request->is('api/*')) {
+                $status = 500;
+                $message = $e->getMessage() ?: 'Server Error';
+                $errors = null;
+
+                if ($e instanceof \Illuminate\Validation\ValidationException) {
+                    $status = $e->status;
+                    $message = 'Validation Error';
+                    $errors = $e->errors();
+                } elseif ($e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+                    $status = 404;
+                    $message = 'Resource not found';
+                } elseif ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
+                    $status = $e->getStatusCode();
+                }
+
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $message,
+                    'errors' => $errors
+                ], $status);
+            }
+        });
     })->create();
