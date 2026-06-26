@@ -6,6 +6,10 @@ services:
     image: expedition-service-app
     container_name: expedition-app
     restart: unless-stopped
+    environment:
+      - IAE_NIM=102022430048
+      - LIGHTHOUSE_CACHE_ENABLE=false
+      - LIGHTHOUSE_QUERY_CACHE_ENABLE=false
     working_dir: /var/www
     command: >
       sh -c "
