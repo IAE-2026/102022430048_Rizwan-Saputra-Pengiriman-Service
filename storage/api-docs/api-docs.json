@@ -12,10 +12,15 @@
                     "Shipments"
                 ],
                 "summary": "Mengambil daftar seluruh kargo",
-                "operationId": "e5d8a6e3156653d7db1eb4358cb42730",
+                "operationId": "db99cd75e57a7034bfce269f30f525c4",
                 "responses": {
                     "200": {
-                        "description": "Berhasil mengambil data"
+                        "description": "Berhasil mengambil data",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -29,7 +34,7 @@
                     "Shipments"
                 ],
                 "summary": "Menerima data manifest",
-                "operationId": "9dd4d81c0d92312e766bd0bde30a579c",
+                "operationId": "27a6e8a2fbf244bcaa54c0e3e46e5fbe",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -50,7 +55,12 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Berhasil membuat data"
+                        "description": "Berhasil membuat data",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -66,7 +76,7 @@
                     "Shipments"
                 ],
                 "summary": "Melacak status spesifik kargo",
-                "operationId": "a13c64910e87f64d5672aab59bacf630",
+                "operationId": "16e78eae3d91df90e3228256743b2587",
                 "parameters": [
                     {
                         "name": "id",
@@ -79,10 +89,20 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Berhasil mengambil detail"
+                        "description": "Berhasil mengambil detail",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     },
                     "404": {
-                        "description": "Data tidak ditemukan"
+                        "description": "Data tidak ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     }
                 },
                 "security": [
