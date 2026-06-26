@@ -6,7 +6,21 @@ services:
     image: expedition-service-app
     container_name: expedition-app
     restart: unless-stopped
+    environment:
+      - IAE_NIM=102022430048
+      - LIGHTHOUSE_CACHE_ENABLE=false
+      - LIGHTHOUSE_QUERY_CACHE_ENABLE=false
     working_dir: /var/www
+    command: >
+      sh -c "
+      if [ ! -f .env ]; then cp .env.example .env; fi &&
+      composer install --no-interaction &&
+      php artisan key:generate &&
+      touch database/database.sqlite &&
+      php artisan migrate --force &&
+      php artisan l5-swagger:generate &&
+      php-fpm
+      "
     volumes:
       - .:/var/www
     networks:
@@ -17,7 +31,7 @@ services:
     container_name: expedition-nginx
     restart: unless-stopped
     ports:
-      - "8002:80"
+      - "8000:80"
     volumes:
       - .:/var/www
       - ./docker-compose/nginx:/etc/nginx/conf.d/

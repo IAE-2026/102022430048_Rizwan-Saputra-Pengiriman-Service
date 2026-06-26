@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Models\InboundShipment;
@@ -30,7 +30,7 @@ class InboundShipmentController extends Controller
     }
 
     #[OA\Get(path: "/api/v1/inbound-shipments", summary: "Mengambil daftar seluruh kargo", tags: ["Shipments"], security: [["ApiKeyAuth" => []]])]
-    #[OA\Response(response: 200, description: "Berhasil mengambil data")]
+    #[OA\Response(response: 200, description: "Berhasil mengambil data", content: new OA\JsonContent())]
     public function index()
     {
         $shipments = InboundShipment::all();
@@ -39,8 +39,8 @@ class InboundShipmentController extends Controller
 
     #[OA\Get(path: "/api/v1/inbound-shipments/{id}", summary: "Melacak status spesifik kargo", tags: ["Shipments"], security: [["ApiKeyAuth" => []]])]
     #[OA\Parameter(name: "id", in: "path", required: true, schema: new OA\Schema(type: "integer"))]
-    #[OA\Response(response: 200, description: "Berhasil mengambil detail")]
-    #[OA\Response(response: 404, description: "Data tidak ditemukan")]
+    #[OA\Response(response: 200, description: "Berhasil mengambil detail", content: new OA\JsonContent())]
+    #[OA\Response(response: 404, description: "Data tidak ditemukan", content: new OA\JsonContent())]
     public function show($id)
     {
         $shipment = InboundShipment::find($id);
@@ -52,7 +52,7 @@ class InboundShipmentController extends Controller
 
     #[OA\Post(path: "/api/v1/inbound-shipments", summary: "Menerima data manifest", tags: ["Shipments"], security: [["ApiKeyAuth" => []]])]
     #[OA\RequestBody(required: true, content: new OA\JsonContent(properties: [new OA\Property(property: "supplier_name", type: "string"), new OA\Property(property: "manifest_data", type: "string")]))]
-    #[OA\Response(response: 201, description: "Berhasil membuat data")]
+    #[OA\Response(response: 201, description: "Berhasil membuat data", content: new OA\JsonContent())]
     public function store(Request $request)
     {
         $validated = $request->validate([
